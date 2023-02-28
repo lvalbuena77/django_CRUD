@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Tasks</h1>
+
+<ul>
+    {% for task in tasks %} <!-- tasks es el nombre de la variable que se encuentra en el archivo views.py -->
+    <li>
+        <a href="{% url 'task_detail' task.id %}"> <!-- task_detail es el nombre de la url que se encuentra en el archivo urls.py -->
+            {% if task.important %} <!-- Si la tarea es importante, se muestra en negrita -->
+            <strong>{{ task.title }}</strong>
+            {% else %} <!-- Si no, se muestra normal -->
+                {{ task.title }}
+            {% endif %}
+
+            <p>{{ task.description }}</p>
+            <p>{{ task.user.username}}</p>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

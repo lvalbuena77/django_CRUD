@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+    <h1>Signin</h1>
+
+    {{ error }}
+
+    <form action = "{% url 'signin' %}" method = "POST">
+        {% csrf_token %}
+
+        {{ form.as_p }} <!-- form.as_p is a built-in django template tag that renders the form as a paragraph -->
+
+        <button>
+            <a>
+                Signin
+            </a>
+        </button>
+    </form>
+
+{% endblock %}
