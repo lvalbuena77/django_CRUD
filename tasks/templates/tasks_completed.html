@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container">
+    <div class="row">
+
+        <h1 class="text-center display-3 py-5">Tasks Completed</h1>
+
+        <ul class="list-group">
+            {% for task in tasks %} <!-- tasks es el nombre de la variable que se encuentra en el archivo views.py -->
+            <a class="list-group-item" href="{% url 'task_detail' task.id %}">
+
+                <!-- task_detail es el nombre de la url que se encuentra en el archivo urls.py -->
+                <header class="d-flex justify-content-between">
+                    {% if task.important %} <!-- Si la tarea es importante, se muestra en negrita -->
+                    <h1 class="fw-bold text-success">{{ task.title }}</h1>
+                    {% else %} <!-- Si no, se muestra normal -->
+                    <h1 class="fw-bold">{{ task.title }}</h1>
+                    {% endif %}
+                    <p>{{ task.user.username}}</p>
+                </header>
+
+                <p>{{ task.description }}</p>
+
+                <p>{{ task.datecompleted|date:"d/m/Y" }}</p> <!-- Se muestra la fecha en formato dd/mm/yyyy -->
+            </a>
+
+            {% endfor %}
+        </ul>
+
+
+
+    </div>
+
+</main>
+
+{% endblock %}

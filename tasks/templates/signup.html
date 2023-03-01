@@ -2,20 +2,40 @@
 
 {% block content %}
 
-<h1>Signup</h1>
 
-{{error}}
+<main class = "container py-5">
+    <div class = "row justify-content-center">
+        <div class = "col-md-5">
+            <div class = "card">
+                <header class = "card-header">
+                    <a href = "{% url 'home' %}" class = "float-end btn btn-outline-primary mt-1">Home</a>
+                    <h4 class = "text-center">Sign up</h4>
+                </header>
+                <article class = "card-body">
+                    <form action="/signup/" method="POST" class="card card-body">
+                        {% csrf_token %}
+                        <div class = "mb-3">
+                            <label for = "username" class = "form-label">Username:</label>
+                            <input type = "text" class = "form-control" id = "username" name = "username" placeholder = "Write your Username" required>
+                        </div>
 
-<form method="POST">
-    
-    {% csrf_token %}
-    
-    {{ form.as_p }}
+                        <div class = "mb-3">
+                            <label for = "password1" class = "form-label">Password:</label>
+                            <input type = "password" class = "form-control" id = "password1" name = "password1" placeholder = "Write your Password" required>
+                        </div>
 
-    <button>
-        Sign up
-    </button>
+                        <div class = "mb-3">
+                            <label for = "password2" class = "form-label">Confirm your Password:</label>
+                            <input type = "password" class = "form-control" id = "password2" name = "password2" placeholder = "Write your Password" required>
+                        </div>
 
-</form>
+                        <button type = "submit" class = "btn btn-primary btn-block">Sign up</button>
+                    </form>
+                </article>
+            </div>
+        </div>
+</main>
+
+
 
 {% endblock %}

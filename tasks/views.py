@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from .forms import TaskForm
 from .models import Task
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
@@ -33,10 +35,17 @@ def signup(request): # formulario de registro de usuario
             return render (request, 'signup.html', {'form': UserCreationForm,
                                                     'error': 'Las contraseñas no coinciden'})
             
+@login_required # solo se puede acceder a esta pagina si el usuario esta autenticado          
 def tasks(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True) # filtrar tareas por usuario y por fecha de completado
     return render (request, 'tasks.html', {'tasks': tasks})
 
+@login_required # solo se puede acceder a esta pagina si el usuario esta autenticado
+def tasks_completed(request): # mostrar tareas completadas
+    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted') # filtrar tareas por usuario y por fecha de completado
+    return render (request, 'tasks_completed.html', {'tasks': tasks})
+    
+@login_required # solo se puede acceder a esta pagina si el usuario esta autenticado
 def create_task(request):
     if request.method == 'GET':
         return render(request, 'create_task.html', {'form': TaskForm})
@@ -51,7 +60,8 @@ def create_task(request):
             return render(request, 'create_task.html', {'form': TaskForm,
                                                         'error': 'Datos incorrectos'})
             
-def task_detail(request, task_id):
+@login_required # solo se puede acceder a esta pagina si el usuario esta autenticado            
+def task_detail(request, task_id): # actualizar tarea 
     if request.method == 'GET':
         task = get_object_or_404(Task, pk=task_id, user=request.user)
         form = TaskForm(instance=task)
@@ -64,7 +74,22 @@ def task_detail(request, task_id):
             return redirect ('tasks')
         except ValueError: # si el usuario no ha introducido datos mostrar mensaje de error para que no caiga el servidor
             return render(request, 'task_detail.html', {'task': task}, {'form': form,
-                                                                        'error': 'Error actualizando tarea'})
+                                                        'error': 'Error actualizando tarea'})
+
+@login_required # solo se puede acceder a esta pagina si el usuario esta autenticado            
+def complete_task(request, task_id): 
+    task = get_object_or_404(Task, pk=task_id, user=request.user) # filtrar tarea por id y por usuario 
+    if request.method == 'POST': # si el usuario esta completando una tarea. Si es POST es porque se ha pulsado el boton de completar tarea
+        task.datecompleted = timezone.now() # actualizar fecha de completado si el usuario ha pulsado el boton de completar tarea
+        task.save() # guardar cambios
+        return redirect('tasks') # redireccionar a la pagina de tareas 
+
+@login_required # solo se puede acceder a esta pagina si el usuario esta autenticado   
+def delete_task(request, task_id): # eliminar tarea
+    task = get_object_or_404(Task, pk=task_id, user=request.user) # filtrar tarea por id y por usuario 
+    if request.method == 'POST': # si el usuario esta eliminando una tarea. Si es POST es porque se ha pulsado el boton de eliminar tarea
+        task.delete() # eliminar tarea
+        return redirect('tasks') # redireccionar a la pagina de tareas
 
 def signout(request): # cerrar sesion
     logout(request)

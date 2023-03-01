@@ -2,16 +2,26 @@
 
 {% block content %}
 
-<h1>Create Task</h1>
+<main class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+           
 
-{{ error }}
+            <form action="{% url 'create_task' %}" method="POST" class="card card-body">
+                <h1>Create Task</h1>
+                
+                {{ error }}
 
-<form method="POST" action="{% url 'create_task' %}"> <!-- La url es la que se encuentra en el archivo urls.py -->
+                {% csrf_token %} <!-- Esto es para evitar ataques de seguridad -->
 
-{% csrf_token %} <!-- Esto es para evitar ataques de seguridad -->
+                {{ form.as_p }} <!-- Esto es para que se muestre el formulario -->
 
-{{ form.as_p }} <!-- Esto es para que se muestre el formulario -->
+                
+                <button type="submit" class="btn btn-primary">Create Task</button>
 
-<button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</main>
 
 {% endblock %}
